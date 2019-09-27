@@ -31,7 +31,7 @@ public class AudioInput : MonoBehaviour
         freq = new Complex[size];
         fakeSize = size - 1024;
         lastsamples = new float[fakeSize];
-        freqStep = sampFreq / (size/2);
+        freqStep = (float)sampFreq / (size/2f);
         NOTES = "C C# D D# E F F# G G# A A# B".Split('a');
         imin = (int)Mathf.Max(0, Mathf.Floor(note_to_fftbin(minNote - 1)));
         imax = (int)Mathf.Min(size/2, (Mathf.Ceil(note_to_fftbin(maxNote + 1))));
@@ -98,7 +98,7 @@ public class AudioInput : MonoBehaviour
 
     float NumberToFreq(int n)
     {
-        return 440 * Mathf.Pow(2, (n - 69) / 12.0f);
+        return 440f * Mathf.Pow(2, (n - 69f) / 12.0f);
     }
 
     string noteName(int n)
