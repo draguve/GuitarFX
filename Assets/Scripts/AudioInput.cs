@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using B83.MathHelpers;
@@ -9,7 +10,9 @@ public class AudioInput : MonoBehaviour
 {
     public int size = 4096; // more than 1024
     public int sampFreq = 22050;
-    
+    public int minNote =  40;
+    public int maxNote = 95;
+     
     
     Complex[] freq;
     private float[] samples= new float[1024];
@@ -17,6 +20,8 @@ public class AudioInput : MonoBehaviour
     private int fakeSize;
     private float freqStep;
     private string[] NOTES;
+
+    private int imin, imax;
     
     
     // Start is called before the first frame update
@@ -28,7 +33,9 @@ public class AudioInput : MonoBehaviour
         lastsamples = new float[fakeSize];
         freqStep = sampFreq / (size/2);
         NOTES = "C C# D D# E F F# G G# A A# B".Split('a');
-        
+        imin = (int)Mathf.Max(0, Mathf.Floor(note_to_fftbin(minNote - 1)));
+        imax = (int)Mathf.Min(size/2, (Mathf.Ceil(note_to_fftbin(maxNote + 1))));
+
     }
 
     // Update is called once per frame
@@ -68,6 +75,19 @@ public class AudioInput : MonoBehaviour
             // multiply the magnitude of each value by 2
             Debug.DrawLine(new Vector3(i, 200), new Vector3(i,  200  + (float)freq[i].magnitude * 200), Color.white);
         }
+
+        int maxHeight = imin;
+        float max = freq[imin].fMagnitude;
+
+        for (int i = imin; i < imax; i++)
+        {
+            if (max < freq[i].fMagnitude)
+            {
+                maxHeight = i;
+                max = freq[i].fMagnitude;
+            }
+        }
+        Debug.Log((maxHeight*freqStep));
     }
 
 
