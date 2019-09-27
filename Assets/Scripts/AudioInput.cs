@@ -16,6 +16,7 @@ public class AudioInput : MonoBehaviour
     private float[] lastsamples;
     private int fakeSize;
     private float freqStep;
+    private string[] NOTES;
     
     
     // Start is called before the first frame update
@@ -26,6 +27,8 @@ public class AudioInput : MonoBehaviour
         fakeSize = size - 1024;
         lastsamples = new float[fakeSize];
         freqStep = sampFreq / (size/2);
+        NOTES = "C C# D D# E F F# G G# A A# B".Split('a');
+        
     }
 
     // Update is called once per frame
@@ -65,5 +68,26 @@ public class AudioInput : MonoBehaviour
             // multiply the magnitude of each value by 2
             Debug.DrawLine(new Vector3(i, 200), new Vector3(i,  200  + (float)freq[i].magnitude * 200), Color.white);
         }
+    }
+
+
+    float FreqToNumber(float f)
+    {
+        return 69 + 12 * Mathf.Log(f / 440.0f,2);
+    }
+
+    float NumberToFreq(int n)
+    {
+        return 440 * Mathf.Pow(2, (n - 69) / 12.0f);
+    }
+
+    string noteName(int n)
+    {
+        return NOTES[n % 12] + (n / 12 - 1);
+    }
+
+    int note_to_fftbin(int n)
+    {
+        return (int) (NumberToFreq(n) / freqStep);
     }
 }
